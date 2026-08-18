@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IAL Further Mathematics — Curriculum Pathways</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F8FAFC;
+  --surface: #FFFFFF;
+  --border: #E2E8F0;
+  --text: #1E293B;
+  --muted: #64748B;
+  --accent: #4F46E5;
+  --fm: #E84855;
+  --alevel: #3B82F6;
+  --igcse: #8B5CF6;
+  --uni: #F59E0B;
+  --radius: 10px;
+  --cell-min: 150px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── Header ── */
+.header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 20px 32px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.header h1 {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.header h1 span { color: var(--muted); font-weight: 500; }
+
+/* School switcher */
+.school-switcher {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.school-switcher label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.school-select {
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--surface);
+  cursor: pointer;
+  min-width: 220px;
+}
+.school-select:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Program tabs */
+.program-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.program-tabs.hidden { display: none; }
+.program-tab {
+  padding: 5px 14px;
+  border: 2px solid var(--border);
+  border-radius: 20px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: var(--surface);
+  color: var(--muted);
+}
+.program-tab:hover { border-color: var(--accent); color: var(--accent); }
+.program-tab.active {
+  color: #fff;
+}
+.program-tab[data-program="all"].active { background: var(--text); border-color: var(--text); }
+
+/* Track filters */
+.track-filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.track-btn {
+  padding: 6px 14px;
+  border: 2px solid var(--border);
+  border-radius: 20px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: var(--surface);
+  color: var(--muted);
+}
+.track-btn:hover { border-color: var(--accent); color: var(--accent); }
+.track-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.track-btn[data-track="all"].active { background: var(--text); border-color: var(--text); }
+
+/* ── Legend ── */
+.legend {
+  display: flex;
+  gap: 16px;
+  padding: 12px 32px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+/* ── Pathway Grid ── */
+.pathway-container {
+  padding: 24px 32px 60px;
+  overflow-x: auto;
+  position: relative;
+}
+.pathway-grid {
+  display: grid;
+  gap: 0;
+  position: relative;
+  min-width: 900px;
+}
+.grade-header {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  padding: 8px 12px;
+  text-align: center;
+  border-bottom: 2px solid var(--border);
+}
+.track-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 12px 8px;
+  writing-mode: horizontal-tb;
+  display: flex;
+  align-items: center;
+  border-right: 2px solid var(--border);
+  min-width: 120px;
+}
+.track-label .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+
+/* ── Course Cards ── */
+.course-cell {
+  padding: 6px;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 6px;
+}
+.course-card {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  text-align: center;
+  position: relative;
+}
+.course-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 12px rgba(79,70,229,0.1);
+  transform: translateY(-2px);
+}
+.course-card.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(79,70,229,0.2);
+}
+.course-card.dimmed {
+  opacity: 0.25;
+}
+.course-card .name {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.3;
+  white-space: pre-line;
+}
+.course-card .session {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.course-card .type-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.course-card .program-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 3px;
+  color: #fff;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+}
+
+/* ── Connection Lines (SVG overlay) ── */
+.connections-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+.conn-line {
+  fill: none;
+  stroke: #CBD5E1;
+  stroke-width: 2;
+  stroke-dasharray: 6 4;
+  opacity: 0.5;
+  transition: all 0.3s;
+}
+.conn-line.highlighted {
+  stroke: var(--accent);
+  stroke-width: 3;
+  stroke-dasharray: none;
+  opacity: 1;
+}
+.conn-line.fm { stroke: var(--fm); stroke-dasharray: 4 3; }
+.conn-line.fm.highlighted { stroke: var(--fm); stroke-width: 3; stroke-dasharray: none; }
+.conn-line.uni { stroke: var(--uni); stroke-dasharray: 8 4; }
+.conn-line.uni.highlighted { stroke: var(--uni); stroke-width: 3; stroke-dasharray: none; }
+.conn-line.dimmed { opacity: 0.08; }
+
+/* ── Tooltip ── */
+.tooltip {
+  position: fixed;
+  background: var(--text);
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  pointer-events: none;
+  z-index: 200;
+  opacity: 0;
+  transition: opacity 0.15s;
+  max-width: 280px;
+  line-height: 1.4;
+}
+.tooltip.visible { opacity: 1; }
+
+/* ── Footer ── */
+.footer {
+  padding: 20px 32px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+
+/* ── Print ── */
+@media print {
+  .header { position: static; }
+  .track-filters, .school-switcher, .program-tabs { display: none; }
+  .pathway-container { overflow: visible; }
+  .course-card { break-inside: avoid; }
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .header { padding: 16px; }
+  .header h1 { font-size: 18px; }
+  .pathway-container { padding: 16px; }
+  .legend { padding: 10px 16px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <h1>Curriculum Pathways <span>— IAL Further Mathematics</span></h1>
+    <div class="school-switcher">
+      <label for="schoolSelect">School</label>
+      <select id="schoolSelect" class="school-select"></select>
+    </div>
+  </div>
+  <div class="program-tabs hidden" id="programTabs"></div>
+  <div class="track-filters" id="trackFilters"></div>
+</div>
+
+<div class="legend" id="legend"></div>
+
+<div class="pathway-container" id="pathwayContainer">
+  <svg class="connections-svg" id="connectionsSvg"></svg>
+  <div class="pathway-grid" id="pathwayGrid"></div>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<div class="footer">
+  Click any course to trace its connections · Use track filters to simplify the view
+</div>
+
+<script src="data.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  // ── State ──
+  let currentSchool = SCHOOLS[0];
+  let activeProgram = 'all';
+  let activeTrack = 'all';
+  let selectedCourse = null;
+
+  // ── DOM refs ──
+  const schoolSelect = document.getElementById('schoolSelect');
+  const programTabs = document.getElementById('programTabs');
+  const trackFilters = document.getElementById('trackFilters');
+  const legend = document.getElementById('legend');
+  const grid = document.getElementById('pathwayGrid');
+  const svg = document.getElementById('connectionsSvg');
+  const tooltip = document.getElementById('tooltip');
+
+  // ── Init ──
+  function init() {
+    populateSchoolSelect();
+    renderLegend();
+    schoolSelect.addEventListener('change', () => {
+      currentSchool = SCHOOLS.find(s => s.id === schoolSelect.value) || SCHOOLS[0];
+      activeProgram = 'all';
+      activeTrack = 'all';
+      selectedCourse = null;
+      renderProgramTabs();
+      renderTrackFilters();
+      render();
+    });
+    renderProgramTabs();
+    renderTrackFilters();
+    render();
+  }
+
+  function populateSchoolSelect() {
+    schoolSelect.innerHTML = SCHOOLS.map(s =>
+      `<option value="${s.id}">${s.name}</option>`
+    ).join('');
+  }
+
+  // ── Program Tabs ──
+  function renderProgramTabs() {
+    const progs = currentSchool.programs || [];
+    if (progs.length <= 1) {
+      programTabs.classList.add('hidden');
+      activeProgram = progs.length === 1 ? progs[0].id : 'all';
+      return;
+    }
+    programTabs.classList.remove('hidden');
+    const allBtn = `<button class="program-tab ${activeProgram === 'all' ? 'active' : ''}"
+      data-program="all"
+      style="${activeProgram === 'all' ? 'background:var(--text);border-color:var(--text);color:#fff' : ''}"
+      onclick="window._setProgram('all')">All Programs</button>`;
+    const tabs = progs.map(p =>
+      `<button class="program-tab ${activeProgram === p.id ? 'active' : ''}"
+        data-program="${p.id}"
+        style="${activeProgram === p.id ? `background:${p.color};border-color:${p.color};color:#fff` : ''}"
+        onclick="window._setProgram('${p.id}')">${p.label}</button>`
+    ).join('');
+    programTabs.innerHTML = allBtn + tabs;
+  }
+
+  window._setProgram = function(programId) {
+    activeProgram = programId;
+    activeTrack = 'all';
+    selectedCourse = null;
+    renderProgramTabs();
+    renderTrackFilters();
+    render();
+  };
+
+  // ── Track Filters ──
+  function renderTrackFilters() {
+    const allTracks = currentSchool.tracks || [];
+    const progs = currentSchool.programs || [];
+    let visibleTracks;
+
+    if (activeProgram === 'all') {
+      visibleTracks = allTracks;
+    } else {
+      visibleTracks = allTracks.filter(t => t.program === activeProgram);
+    }
+
+    const filters = [{ id: 'all', label: progs.length > 1 && activeProgram === 'all' ? 'All Tracks' : 'All', color: 'var(--text)' }, ...visibleTracks];
+    trackFilters.innerHTML = filters.map(t =>
+      `<button class="track-btn ${t.id === activeTrack ? 'active' : ''}"
+              data-track="${t.id}"
+              style="${t.id === activeTrack && t.id !== 'all' ? `background:${t.color};border-color:${t.color}` : ''}"
+              onclick="window._setTrack('${t.id}')">${t.label}</button>`
+    ).join('');
+  }
+
+  window._setTrack = function(trackId) {
+    activeTrack = trackId;
+    selectedCourse = null;
+    renderTrackFilters();
+    render();
+  };
+
+  // ── Legend ──
+  function renderLegend() {
+    const items = [
+      { color: TYPE_COLORS.foundation,  label: 'Foundation' },
+      { color: TYPE_COLORS.igcse,       label: 'IGCSE Extended' },
+      { color: TYPE_COLORS['igcse-core'], label: 'IGCSE Core' },
+      { color: TYPE_COLORS['cam-add'],  label: 'Additional Maths' },
+      { color: TYPE_COLORS.precalc,     label: 'Pre-Calculus' },
+      { color: TYPE_COLORS.alevel,      label: 'A-Level' },
+      { color: TYPE_COLORS.fm,          label: 'Further Maths' },
+      { color: TYPE_COLORS.ap,          label: 'AP' },
+      { color: TYPE_COLORS.ib,          label: 'IB' },
+      { color: TYPE_COLORS.university,  label: 'University' },
+    ];
+    legend.innerHTML = items.map(i =>
+      `<div class="legend-item"><div class="legend-dot" style="background:${i.color}"></div>${i.label}</div>`
+    ).join('');
+  }
+
+  // ── Filtering helpers ──
+  function courseMatchesProgram(c) {
+    if (activeProgram === 'all') return true;
+    return c.program === null || c.program === activeProgram;
+  }
+
+  function courseMatchesTrack(c) {
+    if (activeTrack === 'all') return true;
+    // Foundation and university tracks are always visible
+    if (c.track === 'foundation' || c.track === 'university') return true;
+    return c.track === activeTrack;
+  }
+
+  function connectionMatchesProgram(conn) {
+    if (activeProgram === 'all') return true;
+    return conn.program === null || conn.program === activeProgram;
+  }
+
+  // ── Rendering ──
+  function render() {
+    const school = currentSchool;
+    const grades = school.grades;
+    const tracks = school.tracks || [];
+    const courses = school.courses || [];
+    const connections = school.connections || [];
+
+    // Filter courses by program and track
+    const visibleCourses = courses.filter(c => courseMatchesProgram(c) && courseMatchesTrack(c));
+    const visibleCourseIds = new Set(visibleCourses.map(c => c.id));
+
+    // Determine which track rows to show
+    const visibleTrackIds = new Set();
+    visibleCourses.forEach(c => {
+      if (c.track !== 'foundation' && c.track !== 'university') {
+        visibleTrackIds.add(c.track);
+      }
+    });
+
+    // Build ordered row list: foundation, then track rows, then university
+    const rowTracks = [];
+    const hasFoundation = visibleCourses.some(c => c.track === 'foundation');
+    const hasUniversity = visibleCourses.some(c => c.track === 'university');
+
+    if (hasFoundation) rowTracks.push({ id: 'foundation', label: 'Grade 10', color: '#6B7280' });
+    tracks.filter(t => visibleTrackIds.has(t.id)).forEach(t => rowTracks.push(t));
+    if (hasUniversity) rowTracks.push({ id: 'university', label: 'University', color: '#F59E0B' });
+
+    // Build grid
+    const colCount = grades.length + 1;
+    grid.style.gridTemplateColumns = `120px repeat(${grades.length}, minmax(var(--cell-min), 1fr))`;
+    grid.style.gridTemplateRows = `auto repeat(${rowTracks.length}, minmax(90px, auto))`;
+
+    let html = '';
+
+    // Grade headers (row 1)
+    html += `<div class="grade-header" style="border-right:2px solid var(--border)"></div>`;
+    grades.forEach(g => {
+      html += `<div class="grade-header">${g}</div>`;
+    });
+
+    // Track rows
+    const progs = school.programs || [];
+    const showBadges = progs.length > 1 && activeProgram === 'all';
+
+    rowTracks.forEach((track, ri) => {
+      const trackColor = track.color || '#6B7280';
+      html += `<div class="track-label" style="grid-row:${ri + 2}"><span class="dot" style="background:${trackColor}"></span>${track.label}</div>`;
+
+      grades.forEach((grade, ci) => {
+        const cellCourses = visibleCourses.filter(c => {
+          const matchTrack = c.track === track.id || (track.id === 'foundation' && c.track === 'foundation');
+          const matchGrade = c.grade === ci + 3;
+          return matchTrack && matchGrade;
+        });
+
+        html += `<div class="course-cell" style="grid-row:${ri + 2};grid-column:${ci + 2}">`;
+        cellCourses.forEach(c => {
+          const typeColor = TYPE_COLORS[c.type] || '#6B7280';
+          const isSelected = selectedCourse === c.id;
+          const isConnected = selectedCourse && isConnectedTo(selectedCourse, c.id, connections);
+          const isDimmed = selectedCourse && !isSelected && !isConnected;
+          const classes = ['course-card'];
+          if (isSelected) classes.push('selected');
+          if (isDimmed) classes.push('dimmed');
+
+          // Program badge
+          let badge = '';
+          if (showBadges && c.program) {
+            const prog = progs.find(p => p.id === c.program);
+            if (prog) {
+              badge = `<span class="program-badge" style="background:${prog.color}">${prog.label}</span>`;
+            }
+          }
+
+          html += `<div class="${classes.join(' ')}"
+                       data-id="${c.id}"
+                       onclick="window._selectCourse('${c.id}')"
+                       onmouseenter="window._showTooltip(event, '${c.id}')"
+                       onmouseleave="window._hideTooltip()">
+            <div class="type-bar" style="background:${typeColor}"></div>
+            ${badge}
+            <div class="name">${c.name}</div>
+            ${c.session ? `<div class="session">${c.session}</div>` : ''}
+          </div>`;
+        });
+        html += `</div>`;
+      });
+    });
+
+    grid.innerHTML = html;
+
+    // Render connections
+    requestAnimationFrame(() => renderConnections(connections, selectedCourse, visibleCourseIds));
+  }
+
+  function isConnectedTo(idA, idB, connections) {
+    return connections.some(c =>
+      (c.from === idA && c.to === idB) || (c.from === idB && c.to === idA)
+    );
+  }
+
+  window._selectCourse = function(courseId) {
+    selectedCourse = selectedCourse === courseId ? null : courseId;
+    render();
+  };
+
+  window._showTooltip = function(event, courseId) {
+    const school = currentSchool;
+    const course = school.courses.find(c => c.id === courseId);
+    if (!course) return;
+
+    const incoming = school.connections.filter(c => c.to === courseId).map(c => {
+      const from = school.courses.find(cc => cc.id === c.from);
+      return from ? from.name.replace(/\n/g, ' ') : c.from;
+    });
+    const outgoing = school.connections.filter(c => c.from === courseId).map(c => {
+      const toCourse = school.courses.find(cc => cc.id === c.to);
+      return toCourse ? toCourse.name.replace(/\n/g, ' ') : c.to;
+    });
+
+    let tip = `<strong>${course.name.replace(/\n/g, ' ')}</strong>`;
+    if (course.note) tip += `<br><em>${course.note}</em>`;
+    if (incoming.length) tip += `<br><span style="color:#94A3B8">← Requires:</span> ${incoming.join(', ')}`;
+    if (outgoing.length) tip += `<br><span style="color:#94A3B8">→ Leads to:</span> ${outgoing.join(', ')}`;
+    if (!outgoing.length && !incoming.length) tip += `<br><span style="color:#94A3B8">No connections</span>`;
+
+    tooltip.innerHTML = tip;
+    tooltip.classList.add('visible');
+
+    const rect = event.target.getBoundingClientRect();
+    tooltip.style.left = rect.left + 'px';
+    tooltip.style.top = (rect.bottom + 8) + 'px';
+  };
+
+  window._hideTooltip = function() {
+    tooltip.classList.remove('visible');
+  };
+
+  // ── SVG Connections ──
+  function renderConnections(connections, selectedId, visibleCourseIds) {
+    const container = document.getElementById('pathwayContainer');
+    const containerRect = container.getBoundingClientRect();
+    svg.setAttribute('width', container.scrollWidth);
+    svg.setAttribute('height', container.scrollHeight);
+    svg.innerHTML = '';
+
+    connections.forEach(conn => {
+      // Skip connections whose programs are filtered out
+      if (!connectionMatchesProgram(conn)) return;
+
+      // Skip connections involving courses not in the visible set
+      if (visibleCourseIds && (!visibleCourseIds.has(conn.from) || !visibleCourseIds.has(conn.to))) return;
+
+      const fromEl = grid.querySelector(`[data-id="${conn.from}"]`);
+      const toEl = grid.querySelector(`[data-id="${conn.to}"]`);
+      if (!fromEl || !toEl) return;
+
+      const fromRect = fromEl.getBoundingClientRect();
+      const toRect = toEl.getBoundingClientRect();
+
+      const x1 = fromRect.left + fromRect.width / 2 - containerRect.left + container.scrollLeft;
+      const y1 = fromRect.top + fromRect.height / 2 - containerRect.top + container.scrollTop;
+      const x2 = toRect.left + toRect.width / 2 - containerRect.left + container.scrollLeft;
+      const y2 = toRect.top + toRect.height / 2 - containerRect.top + container.scrollTop;
+
+      const dx = x2 - x1;
+      const cpx = x1 + dx * 0.4;
+
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', `M${x1},${y1} C${cpx},${y1} ${cpx},${y2} ${x2},${y2}`);
+
+      let cls = 'conn-line';
+      if (conn.type === 'fm') cls += ' fm';
+      if (conn.type === 'uni') cls += ' uni';
+      if (selectedId) {
+        if (conn.from === selectedId || conn.to === selectedId) {
+          cls += ' highlighted';
+        } else {
+          cls += ' dimmed';
+        }
+      }
+      path.setAttribute('class', cls);
+      svg.appendChild(path);
+    });
+  }
+
+  // Re-draw connections on resize
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      const visibleCourses = currentSchool.courses.filter(c => courseMatchesProgram(c) && courseMatchesTrack(c));
+      const visibleCourseIds = new Set(visibleCourses.map(c => c.id));
+      renderConnections(currentSchool.connections, selectedCourse, visibleCourseIds);
+    }, 100);
+  });
+
+  // ── Start ──
+  init();
+})();
+</script>
+</body>
+</html>
