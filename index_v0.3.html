@@ -338,78 +338,6 @@ body {
   .pathway-container { padding: 16px; }
   .legend { padding: 10px 16px; }
 }
-
-/* ── Optional Routes Toggle ── */
-.optional-toggle {
-  padding: 8px 0 0;
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-.optional-toggle.hidden { display: none; }
-.toggle-label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text);
-}
-.toggle-label input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  accent-color: var(--accent);
-  cursor: pointer;
-}
-.toggle-hint {
-  font-size: 11px;
-  color: var(--muted);
-  font-style: italic;
-}
-
-/* ── Ghost Cards (optional missing courses) ── */
-.course-card.ghost {
-  border-style: dashed;
-  border-color: var(--muted);
-  opacity: 0.5;
-  cursor: default;
-  pointer-events: none;
-  background: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 4px,
-    rgba(0,0,0,0.02) 4px,
-    rgba(0,0,0,0.02) 8px
-  );
-}
-.course-card.ghost .type-bar {
-  opacity: 0.3;
-}
-.course-card.ghost .name {
-  color: var(--muted);
-  font-style: italic;
-}
-.course-card.ghost .ghost-label {
-  display: block;
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--red);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-top: 4px;
-}
-.conn-line.optional {
-  stroke: var(--muted);
-  stroke-dasharray: 4 4;
-  opacity: 0.35;
-}
-.conn-line.optional.highlighted {
-  stroke: var(--accent);
-  stroke-dasharray: 6 4;
-  opacity: 0.7;
-}
 </style>
 </head>
 <body>
@@ -424,13 +352,6 @@ body {
   </div>
   <div class="program-tabs hidden" id="programTabs"></div>
   <div class="track-filters" id="trackFilters"></div>
-  <div class="optional-toggle hidden" id="optionalToggle">
-    <label class="toggle-label">
-      <input type="checkbox" id="optionalCheckbox" onchange="window._toggleOptional()">
-      <span class="toggle-text">Show alternative routes</span>
-    </label>
-    <span class="toggle-hint">Dashed boxes = courses not offered at this school</span>
-  </div>
 </div>
 
 <div class="legend" id="legend"></div>
@@ -443,7 +364,7 @@ body {
 <div class="tooltip" id="tooltip"></div>
 
 <div class="footer">
-  Click any course to trace its connections · Use track filters to simplify the view · Toggle "Show alternative routes" for optional pathways
+  Click any course to trace its connections · Use track filters to simplify the view
 </div>
 
 <script src="data.js"></script>
@@ -456,7 +377,6 @@ body {
   let activeProgram = 'all';
   let activeTrack = 'all';
   let selectedCourse = null;
-  let showOptional = false;
 
   // ── DOM refs ──
   const schoolSelect = document.getElementById('schoolSelect');
@@ -476,51 +396,14 @@ body {
       activeProgram = 'all';
       activeTrack = 'all';
       selectedCourse = null;
-      showOptional = false;
-      const cb = document.getElementById('optionalCheckbox');
-      if (cb) cb.checked = false;
       renderProgramTabs();
       renderTrackFilters();
       render();
-      updateOptionalToggle();
     });
     renderProgramTabs();
     renderTrackFilters();
     render();
-    updateOptionalToggle();
   }
-
-  // ── Optional Routes ──
-  const OPTIONAL_COURSE_REFS = {
-    'gc-ext': { name: "IGCSE 0580\nExtended", grade: 3, track: "foundation", col: 0, type: "igcse" },
-    'add-maths': { name: "Additional\nMaths 0606", grade: 3, track: "foundation", col: 0, type: "cam-add" },
-  };
-
-  function getMissingOptionalCourses(school) {
-    const ids = Object.keys(OPTIONAL_COURSE_REFS);
-    return ids.filter(id => !school.courses.some(c => c.id === id));
-  }
-
-  function hasOptionalConnections(school) {
-    return (school.connections || []).some(c => c.optional);
-  }
-
-  function updateOptionalToggle() {
-    const el = document.getElementById('optionalToggle');
-    if (!el) return;
-    const show = hasOptionalConnections(currentSchool);
-    el.classList.toggle('hidden', !show);
-    if (!show) {
-      showOptional = false;
-      const cb = document.getElementById('optionalCheckbox');
-      if (cb) cb.checked = false;
-    }
-  }
-
-  window._toggleOptional = function() {
-    showOptional = document.getElementById('optionalCheckbox').checked;
-    render();
-  };
 
   function populateSchoolSelect() {
     schoolSelect.innerHTML = SCHOOLS.map(s =>
@@ -635,12 +518,6 @@ body {
     // Filter courses by program and track
     const visibleCourses = courses.filter(c => courseMatchesProgram(c) && courseMatchesTrack(c));
     const visibleCourseIds = new Set(visibleCourses.map(c => c.id));
-    const missingCourses = showOptional ? getMissingOptionalCourses(school) : [];
-
-    // Include ghost card IDs when optional toggle is on
-    if (showOptional) {
-      missingCourses.forEach(id => visibleCourseIds.add(id));
-    }
 
     // Determine which track rows to show
     const visibleTrackIds = new Set();
@@ -654,9 +531,8 @@ body {
     const rowTracks = [];
     const hasFoundation = visibleCourses.some(c => c.track === 'foundation');
     const hasUniversity = visibleCourses.some(c => c.track === 'university');
-    const forceFoundation = showOptional && missingCourses.length > 0 && !hasFoundation;
 
-    if (hasFoundation || forceFoundation) rowTracks.push({ id: 'foundation', label: 'Grade 10', color: '#6B7280' });
+    if (hasFoundation) rowTracks.push({ id: 'foundation', label: 'Grade 10', color: '#6B7280' });
     tracks.filter(t => visibleTrackIds.has(t.id)).forEach(t => rowTracks.push(t));
     if (hasUniversity) rowTracks.push({ id: 'university', label: 'University', color: '#F59E0B' });
 
@@ -718,22 +594,6 @@ body {
             ${c.session ? `<div class="session">${c.session}</div>` : ''}
           </div>`;
         });
-
-        // Ghost cards for missing optional courses
-        if (showOptional && track.id === 'foundation') {
-          missingCourses.forEach(id => {
-            const ref = OPTIONAL_COURSE_REFS[id];
-            if (ref && ref.grade === ci + 3 && ref.col === 0) {
-              const typeColor = TYPE_COLORS[ref.type] || '#6B7280';
-              html += `<div class="course-card ghost" data-id="${id}">
-                <div class="type-bar" style="background:${typeColor}"></div>
-                <div class="name">${ref.name.replace(/\n/g, '<br>')}</div>
-                <div class="ghost-label">not offered</div>
-              </div>`;
-            }
-          });
-        }
-
         html += `</div>`;
       });
     });
@@ -799,9 +659,6 @@ body {
       // Skip connections whose programs are filtered out
       if (!connectionMatchesProgram(conn)) return;
 
-      // Skip optional connections when toggle is off
-      if (conn.optional && !showOptional) return;
-
       // Skip connections involving courses not in the visible set
       if (visibleCourseIds && (!visibleCourseIds.has(conn.from) || !visibleCourseIds.has(conn.to))) return;
 
@@ -826,7 +683,6 @@ body {
       let cls = 'conn-line';
       if (conn.type === 'fm') cls += ' fm';
       if (conn.type === 'uni') cls += ' uni';
-      if (conn.optional) cls += ' optional';
       if (selectedId) {
         if (conn.from === selectedId || conn.to === selectedId) {
           cls += ' highlighted';

@@ -688,8 +688,6 @@ const SCHOOLS = [
       { from: "ap-calc-ab", to: "ap-calc-bc", type: "normal", program: "ap" },
       { from: "ap-calc-bc", to: "uni-quant", type: "uni", program: null },
       { from: "ap-stats", to: "uni-broad", type: "uni", program: null },
-      { from: "gc-ext", to: "ap-stats", type: "normal", program: "ap", optional: true },
-      { from: "add-maths", to: "ap-stats", type: "normal", program: "ap", optional: true },
     ],
   },
 
@@ -716,8 +714,6 @@ const SCHOOLS = [
       { from: "ap-calc-ab", to: "ap-calc-bc", type: "normal", program: "ap" },
       { from: "ap-calc-bc", to: "uni-quant", type: "uni", program: null },
       { from: "ap-stats", to: "uni-broad", type: "uni", program: null },
-      { from: "gc-ext", to: "ap-stats", type: "normal", program: "ap", optional: true },
-      { from: "add-maths", to: "ap-stats", type: "normal", program: "ap", optional: true },
     ],
   },
 
@@ -744,8 +740,6 @@ const SCHOOLS = [
       { from: "ap-calc-ab", to: "ap-calc-bc", type: "normal", program: "ap" },
       { from: "ap-calc-bc", to: "uni-quant", type: "uni", program: null },
       { from: "ap-stats", to: "uni-broad", type: "uni", program: null },
-      { from: "gc-ext", to: "ap-stats", type: "normal", program: "ap", optional: true },
-      { from: "add-maths", to: "ap-stats", type: "normal", program: "ap", optional: true },
     ],
   },
 
@@ -772,8 +766,6 @@ const SCHOOLS = [
       { from: "ap-calc-ab", to: "ap-calc-bc", type: "normal", program: "ap" },
       { from: "ap-calc-bc", to: "uni-quant", type: "uni", program: null },
       { from: "ap-stats", to: "uni-broad", type: "uni", program: null },
-      { from: "gc-ext", to: "ap-stats", type: "normal", program: "ap", optional: true },
-      { from: "add-maths", to: "ap-stats", type: "normal", program: "ap", optional: true },
     ],
   },
 
@@ -810,8 +802,6 @@ const SCHOOLS = [
       { from: "ap-calc-ab", to: "ap-calc-bc", type: "normal", program: "ap" },
       { from: "ap-calc-bc", to: "uni-quant", type: "uni", program: null },
       { from: "ap-stats", to: "uni-broad", type: "uni", program: null },
-      { from: "gc-ext", to: "ap-stats", type: "normal", program: "ap", optional: true },
-      { from: "add-maths", to: "ap-stats", type: "normal", program: "ap", optional: true },
     ],
   },
 
@@ -844,8 +834,6 @@ const SCHOOLS = [
       { from: "ap-calc-ab", to: "ap-calc-bc", type: "normal", program: "ap" },
       { from: "ap-calc-bc", to: "uni-quant", type: "uni", program: null },
       { from: "ap-stats", to: "uni-broad", type: "uni", program: null },
-      { from: "gc-ext", to: "ap-stats", type: "normal", program: "ap", optional: true },
-      { from: "add-maths", to: "ap-stats", type: "normal", program: "ap", optional: true },
     ],
   },
 
@@ -1118,8 +1106,6 @@ const SCHOOLS = [
       { from: "a2-maths-reg", to: "uni-broad", type: "uni", program: null },
       { from: "ap-calc-bc", to: "uni-quant", type: "uni", program: null },
       { from: "ap-stats", to: "uni-broad", type: "uni", program: null },
-      { from: "gc-ext", to: "ap-stats", type: "normal", program: "ap", optional: true },
-      { from: "add-maths", to: "ap-stats", type: "normal", program: "ap", optional: true },
     ],
   },
 
@@ -1180,8 +1166,6 @@ const SCHOOLS = [
       { from: "a2-maths-reg", to: "uni-broad", type: "uni", program: null },
       { from: "ap-calc-bc", to: "uni-quant", type: "uni", program: null },
       { from: "ap-stats", to: "uni-broad", type: "uni", program: null },
-      { from: "gc-ext", to: "ap-stats", type: "normal", program: "ap", optional: true },
-      { from: "add-maths", to: "ap-stats", type: "normal", program: "ap", optional: true },
     ],
   },
 
@@ -1242,8 +1226,6 @@ const SCHOOLS = [
       { from: "a2-maths-reg", to: "uni-broad", type: "uni", program: null },
       { from: "ap-calc-bc", to: "uni-quant", type: "uni", program: null },
       { from: "ap-stats", to: "uni-broad", type: "uni", program: null },
-      { from: "gc-ext", to: "ap-stats", type: "normal", program: "ap", optional: true },
-      { from: "add-maths", to: "ap-stats", type: "normal", program: "ap", optional: true },
     ],
   },
 
@@ -1329,8 +1311,6 @@ const SCHOOLS = [
       { from: "ap-stats", to: "uni-broad", type: "uni", program: null },
       { from: "ib-math-hl-exam", to: "uni-quant", type: "uni", program: null },
       { from: "ib-math-sl-exam", to: "uni-broad", type: "uni", program: null },
-      { from: "gc-ext", to: "ap-stats", type: "normal", program: "ap", optional: true },
-      { from: "add-maths", to: "ap-stats", type: "normal", program: "ap", optional: true },
     ],
   },
 
